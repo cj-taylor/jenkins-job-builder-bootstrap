@@ -10,6 +10,11 @@ else
     CONFIG_PATH=$PROJECT_ROOT/jenkins_jobs.ini
 fi 
 
+if [[ -z "$JENKINS_USER" || -z "$JENKINS_API_KEY" ]]; then 
+    echo 'Check/Set your credentials per the Getting Started steps!'
+    exit 1
+fi
+
 docker run --interactive \
     --tty \
     --rm \
@@ -17,4 +22,4 @@ docker run --interactive \
     --volume "$CONFIG_PATH":/etc/jenkins_jobs/jenkins_jobs.ini \
     --volume "$VOLUME_PATH":/opt/jenkins-jobs \
     cjtaylor/jenkins-job-builder \
-    jenkins-jobs --version
+    jenkins-jobs --user "$JENKINS_USER" --password "$JENKINS_API_KEY" "$@"
