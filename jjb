@@ -3,8 +3,10 @@
 docker build . -t cjtaylor/jenkins-job-builder > /dev/null 2>&1
 
 if hash cygpath 2>/dev/null; then 
+    VOLUME_PATH=$(cygpath -aw $(pwd))
     CONFIG_PATH=$(cygpath -aw $(pwd)/jenkins_jobs.ini)
 else 
+    VOLUME_PATH=$PROJECT_ROOT
     CONFIG_PATH=$PROJECT_ROOT/jenkins_jobs.ini
 fi 
 
@@ -13,5 +15,6 @@ docker run --interactive \
     --rm \
     --name jjb \
     --volume "$CONFIG_PATH":/etc/jenkins_jobs/jenkins_jobs.ini \
+    --volume "$VOLUME_PATH":/opt/jenkins-jobs \
     cjtaylor/jenkins-job-builder \
     jenkins-jobs --version
